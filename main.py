@@ -10,6 +10,9 @@ from tkinterdnd2 import DND_FILES, TkinterDnD
 temp_dir = 'temp'
 os.makedirs(temp_dir, exist_ok=True)
 
+# BDF 文件夹路径
+bdf_dir = 'bdf'
+
 def extract_chinese(text):
     # 提取文本中的所有中文字符
     pattern = re.compile(r'[\u4e00-\u9fff]')
@@ -71,10 +74,17 @@ def filter_comments_and_modify_c_content(c_content):
     return c_content
 
 def run_bdfconv(output_text):
+    # 获取选择的 BDF 文件名
+    bdf_file = bdf_file_menu.get()
+    if not bdf_file:
+        output_text.delete(1.0, tk.END)
+        output_text.insert(tk.END, "Please select a BDF file.")
+        return
+
     # 定义命令参数
     cmd = [
         './bdfconv',
-        'bdf/wenquanyi_9pt.bdf',
+        os.path.join(bdf_dir, bdf_file),
         '-b', '0',
         '-f', '1',
         '-M', os.path.join(temp_dir, 'gb.map'),
@@ -153,12 +163,19 @@ def on_drop(event):
             input_text.delete(1.0, tk.END)  # 清空输入框
             input_text.insert(tk.END, chinese_content)  # 显示提取的中文
 
+def update_bdf_files():
+    bdf_files = [f for f in os.listdir(bdf_dir) if f.endswith('.bdf')]
+    menu = bdf_file_dropdown['menu']
+    menu.delete(0, 'end')  # Clear existing options
+    for bdf_file in bdf_files:
+        menu.add_command(label=bdf_file, command=tk._setit(bdf_file_menu, bdf_file))
+
 # 创建主窗口
 root = TkinterDnD.Tk()  # 使用 TkinterDnD 的 Tk 类
 root.title("Unicode转换工具")
 
 # 创建输入文本框
-input_label = tk.Label(root, text="输入文本/选择文件/拖入文件")
+input_label = tk.Label(root, text="输入文本/选择文件/拖入文件:")
 input_label.pack()
 input_text = scrolledtext.ScrolledText(root, height=10)
 input_text.pack()
@@ -170,6 +187,20 @@ input_text.dnd_bind('<<Drop>>', on_drop)
 # 创建选择文件按钮
 choose_file_button = tk.Button(root, text="选择文件", command=lambda: choose_file(input_text))
 choose_file_button.pack()
+
+# 创建下拉选择框
+bdf_frame = tk.Frame(root)
+bdf_frame.pack(fill=tk.X, padx=10, pady=5)
+
+bdf_file_label = tk.Label(bdf_frame, text="选择BDF文件:")
+bdf_file_label.pack(side=tk.LEFT)
+bdf_file_menu = tk.StringVar(root)
+bdf_file_menu.set("请选择文件")
+bdf_file_dropdown = tk.OptionMenu(bdf_frame, bdf_file_menu, [])
+bdf_file_dropdown.pack(side=tk.LEFT)
+
+# 更新 BDF 文件列表
+update_bdf_files()
 
 # 创建输出文本框
 output_label = tk.Label(root, text="输出文件内容 (.c):")
