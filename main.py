@@ -4,6 +4,7 @@ import re
 import subprocess
 import tkinter as tk
 from tkinter import scrolledtext, filedialog
+from tkinterdnd2 import DND_FILES, TkinterDnD
 
 # 确保 temp 文件夹存在
 temp_dir = 'temp'
@@ -135,15 +136,36 @@ def copy_output(output_text):
     root.clipboard_clear()  # 清空剪贴板
     root.clipboard_append(output_content)  # 将内容复制到剪贴板
 
+def on_drop(event):
+    # 获取拖放的文件路径
+    file_path = event.data
+    if file_path:
+        file_path = file_path.replace('{', '').replace('}', '')  # 清理路径中的花括号
+        if os.path.isfile(file_path):
+            with codecs.open(file_path, 'r', 'utf-8') as f:
+                content = f.read()
+
+            # 过滤掉注释内容
+            content_without_comments = filter_comments(content)
+
+            # 提取中文并显示在输入框中
+            chinese_content = extract_chinese(content_without_comments)
+            input_text.delete(1.0, tk.END)  # 清空输入框
+            input_text.insert(tk.END, chinese_content)  # 显示提取的中文
+
 # 创建主窗口
-root = tk.Tk()
+root = TkinterDnD.Tk()  # 使用 TkinterDnD 的 Tk 类
 root.title("Unicode转换工具")
 
 # 创建输入文本框
-input_label = tk.Label(root, text="输入文件内容:")
+input_label = tk.Label(root, text="输入文本/选择文件/拖入文件")
 input_label.pack()
 input_text = scrolledtext.ScrolledText(root, height=10)
 input_text.pack()
+
+# 注册拖放功能
+input_text.drop_target_register(DND_FILES)
+input_text.dnd_bind('<<Drop>>', on_drop)
 
 # 创建选择文件按钮
 choose_file_button = tk.Button(root, text="选择文件", command=lambda: choose_file(input_text))
