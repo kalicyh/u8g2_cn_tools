@@ -15,3 +15,30 @@
 ## 参考
 
 - [larryli/u8g2_wqy](https://github.com/larryli/u8g2_wqy)
+
+### 字体来源
+
+- https://github.com/TakWolf/fusion-pixel-font
+- https://github.com/Angelic47/FontChinese7x7
+- https://github.com/SolidZORO/zpix-pixel-font
+- http://wenq.org/
+
+
+## 使用参考flipper zero的fap程序为例
+
+```C
+static const uint8_t kalicyh[1535] =
+    //你的字
+    ;
+
+static void app_draw_callback(Canvas* canvas, void* ctx) {
+    UNUSED(ctx);
+
+    canvas_clear(canvas);
+    canvas_set_custom_u8g2_font(canvas, kalicyh);
+
+    char draw_str[44] = {};
+
+    canvas_draw_str_aligned(canvas, 128, 2, AlignRight, AlignTop, "关于");
+}
+```
