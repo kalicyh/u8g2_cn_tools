@@ -4,7 +4,7 @@
 
 ## 界面
 
-![QQ20240916-181138](https://github.com/user-attachments/assets/f8835134-da3d-464a-a5b1-5df3b2da814c)
+![QQ20240916-181138](https://github.com/user-attachments/assets/7ec7db2c-034e-4627-bc69-c4f7202a078a)
 
 ## 功能
 
