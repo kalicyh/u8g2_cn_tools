@@ -1,3 +1,6 @@
 
 .DS_Store
 /temp
+*.spec
+/build
+/dist

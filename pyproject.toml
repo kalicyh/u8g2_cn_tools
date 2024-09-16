@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "u8g2-cn-tools"
+version = "0.1.0"
+description = ""
+authors = ["Cheng YiHONG <2120490235@zufedfc.edu.cn>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+tkinterdnd2 = "^0.4.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
