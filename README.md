@@ -4,7 +4,9 @@
 
 ## 界面
 
-![QQ20240916-185819](https://github.com/user-attachments/assets/fb163d9c-d997-44a9-a20e-d8e3ef3cbd8a)
+![QQ20240917-145610](https://github.com/user-attachments/assets/313c1784-edb0-4a36-bf6d-8f62cdf69183)
+
+![QQ20240917-150057](https://github.com/user-attachments/assets/52ac11a0-e38b-4e45-971a-4bde9a0a4b4e)
 
 ## 功能
 
