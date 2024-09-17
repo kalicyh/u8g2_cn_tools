@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 tkinterdnd2 = "^0.4.2"
+chardet = "^5.2.0"
 
 
 [build-system]
