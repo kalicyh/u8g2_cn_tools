@@ -217,7 +217,7 @@ bdf_frame.pack(fill=tk.X, padx=10, pady=5)
 bdf_file_label = tk.Label(bdf_frame, text="选择BDF文件:")
 bdf_file_label.pack(side=tk.LEFT)
 bdf_file_menu = tk.StringVar(root)
-bdf_file_menu.set("fusion-pixel-10px-proportional-zh_hans.bdf")
+bdf_file_menu.set("fusion-pixel-10px-monospaced-zh_hans.bdf")
 bdf_file_dropdown = tk.OptionMenu(bdf_frame, bdf_file_menu, [])
 bdf_file_dropdown.pack(side=tk.LEFT)
 
