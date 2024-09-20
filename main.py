@@ -39,11 +39,20 @@ def process_file(input_file, output_file):
             f.write('\n'.join(final_content))
 
 def filter_comments_and_modify_c_content(c_content):
+    # 过滤注释
     c_content = re.sub(r'//.*', '', c_content)
     c_content = re.sub(r'/\*.*?\*/', '', c_content, flags=re.DOTALL)
     c_content = "\n".join([line for line in c_content.splitlines() if line.strip()])
     c_content = re.sub(r' U8G2_FONT_SECTION\("kalicyh"\)', '', c_content)
-    c_content = re.sub(r'(?<!static\s)const', r'static const', c_content)
+
+    # 根据复选框的状态决定是否修改 const 为 static const
+    if add_static_var.get():
+        c_content = re.sub(r'(?<!static\s)const', r'static const', c_content)
+
+    # 根据复选框的状态决定是否移除数组长度
+    if remove_array_length_var.get():
+        c_content = re.sub(r'\[\d+\]', '[]', c_content)
+
     return c_content
 
 def run_bdfconv(output_text):
@@ -94,19 +103,23 @@ def choose_file(input_text):
 def choose_folder():
     folder_path = filedialog.askdirectory()
     if folder_path:
+        # 获取用户输入的文件后缀并拆分为列表
+        extensions = extension_entry.get().strip().split(',')
+        extensions = [ext.strip().lower() for ext in extensions]  # 转换为小写并去掉多余的空格
+        
         # 更新进度条
         progress['value'] = 0
         root.update_idletasks()
 
         # 获取文件总数
-        file_count = sum([len(files) for r, d, files in os.walk(folder_path) if any(file.lower().endswith(('.c', '.h')) for file in files)])
+        file_count = sum([len(files) for r, d, files in os.walk(folder_path) if any(file.lower().endswith(tuple(extensions)) for file in files)])
         processed_count = 0
 
         # 使用 os.walk() 递归遍历文件夹
         for root_dir, dirs, files in os.walk(folder_path):
             for file_name in files:
-                # 仅处理 .c 和 .h 文件
-                if file_name.lower().endswith(('.c', '.h')):
+                # 仅处理用户输入的文件后缀
+                if file_name.lower().endswith(tuple(extensions)):
                     file_path = os.path.join(root_dir, file_name)
                     
                     if os.path.isfile(file_path):  # 确保只处理文件
@@ -180,15 +193,49 @@ def remove_duplicates():
     input_text.delete(1.0, tk.END)
     input_text.insert(tk.END, unique_content)
 
+def sort_text_by_unicode():
+    text_content = input_text.get(1.0, tk.END).strip()
+    sorted_content = ''.join(sorted(text_content))
+    input_text.delete(1.0, tk.END)
+    input_text.insert(tk.END, sorted_content)
+
 # 创建主窗口
 root = TkinterDnD.Tk()
 root.title("Unicode转换工具")
+
+# 在主窗口中添加一个 Frame 容器用于放置 Label 和 Entry
+extension_frame = tk.Frame(root)
+extension_frame.pack(pady=5)
+
+# 在 Frame 中添加扩展名的 Label
+extension_label = tk.Label(extension_frame, text="输入处理文件的后缀 (如：c,h,txt):")
+extension_label.pack(side=tk.LEFT)
+
+# 在 Frame 中添加扩展名的 Entry，默认值为 'c,h'
+extension_entry = tk.Entry(extension_frame)
+extension_entry.insert(0, "c,h")  # 设置默认值为 'c,h'
+extension_entry.pack(side=tk.LEFT)
 
 # 创建输入文本框
 input_label = tk.Label(root, text="输入文本/选择文件/拖入文件:")
 input_label.pack()
 input_text = scrolledtext.ScrolledText(root, height=10)
 input_text.pack()
+
+add_static_var = tk.BooleanVar(value=True)  # 默认选中
+remove_array_length_var = tk.BooleanVar(value=True)
+
+# 创建复选框容器 Frame
+checkbox_frame = tk.Frame(root)
+checkbox_frame.pack(pady=5)
+
+# 添加static复选框
+add_static_checkbox = tk.Checkbutton(checkbox_frame, text="在开头添加 static", variable=add_static_var)
+add_static_checkbox.pack(side=tk.LEFT, padx=10)
+
+# 移除数组长度复选框
+remove_array_length_checkbox = tk.Checkbutton(checkbox_frame, text="移除数组长度", variable=remove_array_length_var)
+remove_array_length_checkbox.pack(side=tk.LEFT, padx=10)
 
 # 注册拖放功能
 input_text.drop_target_register(DND_FILES)
@@ -209,6 +256,10 @@ choose_folder_button.pack(side=tk.LEFT, padx=5)
 # 创建去重按钮
 remove_duplicates_button = tk.Button(button_frame, text="去重", command=remove_duplicates)
 remove_duplicates_button.pack(side=tk.LEFT, padx=5)
+
+# 创建排序按钮
+sort_button = tk.Button(button_frame, text="排序", command=sort_text_by_unicode)
+sort_button.pack(side=tk.LEFT, padx=5)
 
 # 创建下拉选择框
 bdf_frame = tk.Frame(root)
