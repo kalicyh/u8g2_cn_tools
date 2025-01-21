@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.12"
 tkinterdnd2 = "^0.4.2"
 chardet = "^5.2.0"
+wxpython = "^4.2.2"
 
 
 [build-system]

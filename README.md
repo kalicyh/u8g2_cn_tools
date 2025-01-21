@@ -19,6 +19,15 @@
 - 增加去除数组数字的复选框
 - 增加添加`static`的复选框
 
+## 自行编译 bdfconv
+
+克隆`https://github.com/olikraus/u8g2`
+
+```bash
+cd tools/font/bdfconv
+make
+```
+
 ## 参考
 
 - [larryli/u8g2_wqy](https://github.com/larryli/u8g2_wqy)
