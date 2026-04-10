@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "u8g2-cn-tools"
 version = "0.1.0"
-description = ""
+description = "u8g2 Chinese font generation tools for GUI and project builds"
 authors = ["Cheng YiHONG <2120490235@zufedfc.edu.cn>"]
 readme = "README.md"
 
@@ -11,6 +11,8 @@ tkinterdnd2 = "^0.4.2"
 chardet = "^5.2.0"
 wxpython = "^4.2.2"
 
+[tool.poetry.scripts]
+u8g2-cn-tools = "font_cli:main"
 
 [build-system]
 requires = ["poetry-core"]

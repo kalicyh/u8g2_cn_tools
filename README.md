@@ -2,6 +2,41 @@
 
 适合 [u8g2](https://github.com/olikraus/u8g2) 的中文字体生成工具
 
+## CLI
+
+现在支持命令行直接输出项目可用的 `.u8f` 文件。
+
+安装后可执行：
+
+```bash
+poetry run u8g2-cn-tools \
+  --repo-root /path/to/Momentum-Firmware-CN \
+  --strings localization/zh_CN/strings.json \
+  --tools-dir /path/to/u8g2_cn_tools \
+  --bdf /path/to/u8g2_cn_tools/bdf/fusion-pixel-10px-proportional-zh_hans.bdf \
+  --work-dir /tmp/zh_fonts_work \
+  --out-u8f /tmp/zh_fonts/primary_zh.u8f \
+  --out-map /tmp/zh_fonts_work/primary_zh.map \
+  --out-chars /tmp/zh_fonts_work/primary_zh_chars.txt \
+  --font-name primary_zh
+```
+
+默认会扫描：
+
+- `applications/main`
+- `applications/services`
+- `applications/settings`
+- `lib`
+- `assets/dolphin/**/meta.txt`
+
+并合并 `strings.json` 的文本，最终生成：
+
+- `.u8f`
+- `.map`
+- `chars.txt`
+
+这样可以直接产出当前 Momentum Firmware CN 项目使用的字体格式。
+
 ## 界面
 
 ![QQ20240917-145610](https://github.com/user-attachments/assets/313c1784-edb0-4a36-bf6d-8f62cdf69183)
